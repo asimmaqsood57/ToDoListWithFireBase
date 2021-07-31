@@ -1,7 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function NavBar() {
+import { useHistory } from "react-router-dom";
+import { auth } from "../firebase";
+export default function NavBar({ user }) {
+  const history = useHistory();
   return (
     <nav>
       <div className="nav-wrapper blue">
@@ -9,16 +12,28 @@ export default function NavBar() {
           Todo
         </Link>
         <ul id="nav-mobile" className="right">
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
-            <Link to="/signup">Signup</Link>
-          </li>
-
-          <li>
-            <button className="btn red">Logout</button>
-          </li>
+          {user ? (
+            <li>
+              <button
+                onClick={() => {
+                  auth.signOut();
+                  history.push("/login");
+                }}
+                className="btn red"
+              >
+                Logout
+              </button>
+            </li>
+          ) : (
+            <>
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+              <li>
+                <Link to="/signup">Signup</Link>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </nav>

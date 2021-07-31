@@ -1,14 +1,31 @@
 import React from "react";
 
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { auth } from "../firebase";
 
 export default function Login() {
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const history = useHistory();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(email, password);
+    try {
+      const result = await auth.createUserWithEmailAndPassword(email, password);
+      window.M.toast({
+        html: `Welcome , ${result.user.email}`,
+        classes: "green",
+      });
+      history.push("/");
+    } catch (error) {
+      window.M.toast({
+        html: error.message,
+        classes: "green",
+      });
+    }
   };
 
   return (
